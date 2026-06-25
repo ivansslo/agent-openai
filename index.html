@@ -10,37 +10,42 @@
             margin: 0;
             background-color: #0d1117;
             color: #c9d1d9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         header {
             background-color: #161b22;
-            padding: 16px 32px;
+            padding: 12px 24px;
             border-bottom: 1px solid #30363d;
             display: flex;
             align-items: center;
+            flex-shrink: 0;
         }
         .repo-header {
-            padding: 16px 32px 0;
             background-color: #0d1117;
+            flex-shrink: 0;
+        }
+        .repo-title-container {
+            padding: 16px 32px 8px;
         }
         .repo-title {
             font-size: 20px;
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 16px;
         }
         .repo-title a {
             color: #58a6ff;
             text-decoration: none;
-        }
-        .repo-title a:hover {
-            text-decoration: underline;
         }
         .repo-title .separator {
             color: #8b949e;
         }
         .tabs {
             display: flex;
+            padding: 0 32px;
             gap: 8px;
             border-bottom: 1px solid #30363d;
         }
@@ -54,10 +59,6 @@
             align-items: center;
             gap: 6px;
         }
-        .tab:hover {
-            background-color: #161b22;
-            border-bottom-color: #8b949e;
-        }
         .tab.active {
             font-weight: 600;
             border-bottom-color: #f78166;
@@ -68,40 +69,119 @@
         .active .tab-icon {
             fill: #c9d1d9;
         }
-        .content {
-            padding: 32px;
-            max-width: 1200px;
-            margin: 0 auto;
+
+        /* Workspace Layout */
+        .workspace-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
         }
-        .agent-card {
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: #0d1117;
+            border-right: 1px solid #30363d;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-header {
+            padding: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #30363d;
+        }
+        .agent-list {
+            overflow-y: auto;
+            flex: 1;
+        }
+        .agent-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #21262d;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .agent-item:hover {
             background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 6px;
-            padding: 24px;
-            margin-bottom: 16px;
         }
-        .agent-header {
+        .agent-item.active {
+            background-color: #161b22;
+            border-left: 2px solid #f78166;
+        }
+        .agent-item-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .agent-item-status {
+            font-size: 12px;
+            color: #8b949e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #238636;
+        }
+
+        /* Main Panel */
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #0d1117;
+        }
+        .panel-header {
+            padding: 12px 24px;
+            background-color: #161b22;
+            border-bottom: 1px solid #30363d;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
+            align-items: center;
         }
-        .agent-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: #58a6ff;
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .agent-status {
-            font-size: 12px;
-            padding: 2px 8px;
-            border-radius: 12px;
-            background-color: #238636;
-            color: white;
+        .terminal {
+            flex: 1;
+            background-color: #010409;
+            margin: 16px;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            padding: 16px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.5;
         }
-        .agent-desc {
+        .terminal-line { margin-bottom: 4px; }
+        .prompt { color: #58a6ff; }
+        .command { color: #c9d1d9; }
+        .output { color: #8b949e; }
+        .success { color: #3fb950; }
+
+        .input-area {
+            padding: 16px 24px;
+            border-top: 1px solid #30363d;
+            display: flex;
+            gap: 12px;
+        }
+        .chat-input {
+            flex: 1;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #c9d1d9;
             font-size: 14px;
-            color: #8b949e;
-            margin-bottom: 16px;
         }
         .btn {
             background-color: #21262d;
@@ -112,18 +192,14 @@
             font-size: 14px;
             cursor: pointer;
             font-weight: 500;
-        }
-        .btn:hover {
-            background-color: #30363d;
-            border-color: #8b949e;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .btn-primary {
             background-color: #238636;
             color: white;
             border-color: rgba(240,246,252,0.1);
-        }
-        .btn-primary:hover {
-            background-color: #2ea043;
         }
     </style>
 </head>
@@ -135,75 +211,74 @@
     </header>
 
     <div class="repo-header">
-        <div class="repo-title">
-            <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7a.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path></svg>
-            <a href="#">ivansslo</a>
-            <span class="separator">/</span>
-            <a href="#" style="font-weight: 600;">agent-openai</a>
-            <span style="font-size: 12px; border: 1px solid #30363d; border-radius: 20px; padding: 0 7px; color: #8b949e;">Public</span>
+        <div class="repo-title-container">
+            <div class="repo-title">
+                <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7a.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path></svg>
+                <a href="#">ivansslo</a>
+                <span class="separator">/</span>
+                <a href="#" style="font-weight: 600;">agent-openai</a>
+                <span style="font-size: 12px; border: 1px solid #30363d; border-radius: 20px; padding: 0 7px; color: #8b949e;">Public</span>
+            </div>
         </div>
 
         <nav class="tabs">
-            <a href="#" class="tab">
-                <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25Z"></path><path d="M8 11.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Zm-3.25-2a.75.75 0 0 0 0 1.5h.5a.75.75 0 0 0 0-1.5Zm0-3a.75.75 0 0 0 0 1.5h.5a.75.75 0 0 0 0-1.5Zm0-3a.75.75 0 0 0 0 1.5h.5a.75.75 0 0 0 0-1.5Zm3 0a.75.75 0 0 0 0 1.5h.5a.75.75 0 0 0 0-1.5Zm0 3a.75.75 0 0 0 0 1.5h.5a.75.75 0 0 0 0-1.5Z"></path></svg>
-                Code
-            </a>
-            <a href="#" class="tab">
-                <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"></path></svg>
-                Issues
-            </a>
-            <a href="#" class="tab">
-                <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1a2.5 2.5 0 0 1 2.5 2.5v3.5a.75.75 0 0 1-1.5 0V5c0-.552-.448-1-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354ZM3.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z"></path></svg>
-                Pull requests
-            </a>
-            <a href="#" class="tab active">
-                <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" style="fill: #c9d1d9;"><path d="M3.177 6.676a.25.25 0 0 0 .177.427h1.146V10a2.5 2.5 0 0 0 2.5 2.5h1v1.146a.25.25 0 0 0 .427.177l2.827-2.827a.25.25 0 0 0 0-.354L8.43 7.816a.25.25 0 0 0-.427.177V9.143h-1a1 1 0 0 1-1-1v-2.89h1.146a.25.25 0 0 0 .177-.427L4.506 3.003a.25.25 0 0 0-.354 0L1.326 5.83a.25.25 0 0 0 .177.427h1.674v.42Z"></path><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"></path></svg>
-                Agents
-            </a>
-            <a href="#" class="tab">
-                <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M11 2.75V4H5V2.75A.75.75 0 0 1 5.75 2h4.5a.75.75 0 0 1 .75.75Z"></path><path d="M13.25 4H15a.75.75 0 0 1 .75.75v8.5a.75.75 0 0 1-.75.75H1a.75.75 0 0 1-.75-.75v-8.5A.75.75 0 0 1 1 4h1.75v1.25a.25.25 0 0 0 .25.25h10a.25.25 0 0 0 .25-.25V4ZM3.25 7a.75.75 0 0 0 0 1.5h9.5a.75.75 0 0 0 0-1.5h-9.5Zm0 3a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5h-5.5Z"></path></svg>
-                Projects
-            </a>
-            <a href="#" class="tab">
-                <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2ZM1.5 3.75v8.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Z"></path><path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4Zm3.5 4v-.5a1.5 1.5 0 0 0-1.5-1.5h-4a1.5 1.5 0 0 0-1.5 1.5v.5h7Z"></path></svg>
-                Insights
-            </a>
-            <a href="#" class="tab">
-                <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M8 2.106a6.5 6.5 0 1 1-5.187 8.169.75.75 0 0 1 1.468-.314 5 5 0 1 0 3.969-6.355.75.75 0 0 1 .15-1.493A6.486 6.486 0 0 1 8 2.106Zm.001 3.395a.75.75 0 0 1 .75.75v2h2a.75.75 0 0 1 0 1.5h-2.75a.75.75 0 0 1-.75-.75v-2.75a.75.75 0 0 1 .75-.75Z"></path><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Z"></path></svg>
-                Settings
-            </a>
+            <a href="#" class="tab"><svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25Z"></path></svg> Code</a>
+            <a href="#" class="tab active"><svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" style="fill: #c9d1d9;"><path d="M3.177 6.676a.25.25 0 0 0 .177.427h1.146V10a2.5 2.5 0 0 0 2.5 2.5h1v1.146a.25.25 0 0 0 .427.177l2.827-2.827a.25.25 0 0 0 0-.354L8.43 7.816a.25.25 0 0 0-.427.177V9.143h-1a1 1 0 0 1-1-1v-2.89h1.146a.25.25 0 0 0 .177-.427L4.506 3.003a.25.25 0 0 0-.354 0L1.326 5.83a.25.25 0 0 0 .177.427h1.674v.42Z"></path><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"></path></svg> Agents</a>
+            <a href="#" class="tab"><svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M11 2.75V4H5V2.75A.75.75 0 0 1 5.75 2h4.5a.75.75 0 0 1 .75.75Z"></path></svg> Projects</a>
         </nav>
     </div>
 
-    <div class="content">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-            <h2 style="font-size: 20px; font-weight: 400;">Active Agents</h2>
-            <button class="btn btn-primary">Create Agent</button>
-        </div>
+    <div class="workspace-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">Active Agents</div>
+            <div class="agent-list">
+                <div class="agent-item active">
+                    <div class="agent-item-name">OpenAI-Assistant-01</div>
+                    <div class="agent-item-status"><span class="status-dot"></span> Online</div>
+                </div>
+                <div class="agent-item">
+                    <div class="agent-item-name">DocGen-Agent</div>
+                    <div class="agent-item-status"><span class="status-dot" style="background-color: #8b949e;"></span> Idle</div>
+                </div>
+                <div class="agent-item">
+                    <div class="agent-item-name">Bug-Hunter-Bot</div>
+                    <div class="agent-item-status"><span class="status-dot" style="background-color: #f85149;"></span> Error</div>
+                </div>
+            </div>
+            <div style="padding: 16px; border-top: 1px solid #30363d;">
+                <button class="btn" style="width: 100%; justify-content: center;">+ New Agent</button>
+            </div>
+        </aside>
 
-        <div class="agent-card">
-            <div class="agent-header">
-                <div class="agent-name">OpenAI-Assistant-01</div>
-                <span class="agent-status">Online</span>
+        <main class="main-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span style="font-weight: 600;">OpenAI-Assistant-01</span>
+                    <span style="font-size: 12px; color: #8b949e; background: #21262d; padding: 2px 8px; border-radius: 10px;">gpt-4o</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn">Settings</button>
+                    <button class="btn btn-primary">Deploy</button>
+                </div>
             </div>
-            <div class="agent-desc">Main assistant for code reviews and repository management. Using GPT-4o model.</div>
-            <div style="display: flex; gap: 8px;">
-                <button class="btn">Configure</button>
-                <button class="btn">Logs</button>
-            </div>
-        </div>
 
-        <div class="agent-card">
-            <div class="agent-header">
-                <div class="agent-name">DocGen-Agent</div>
-                <span class="agent-status" style="background-color: #8b949e;">Idle</span>
+            <div class="terminal">
+                <div class="terminal-line"><span class="success">[SYSTEM]</span> Agent initialized successfully.</div>
+                <div class="terminal-line"><span class="success">[SYSTEM]</span> Connected to repository: ivansslo/agent-openai</div>
+                <div class="terminal-line"><span class="prompt">ivansslo@agent-01:~$</span> <span class="command">analyze ./src</span></div>
+                <div class="terminal-line"><span class="output">Starting analysis of source directory...</span></div>
+                <div class="terminal-line"><span class="output">Found 12 files. Checking for optimization opportunities...</span></div>
+                <div class="terminal-line"><span class="success">[OK]</span> Analysis complete. Suggested 2 PRs for performance improvement.</div>
+                <div class="terminal-line"><span class="prompt">ivansslo@agent-01:~$</span> <span class="command">_</span></div>
             </div>
-            <div class="agent-desc">Generates documentation from codebase comments. Running on schedule.</div>
-            <div style="display: flex; gap: 8px;">
-                <button class="btn">Configure</button>
-                <button class="btn">Logs</button>
+
+            <div class="input-area">
+                <input type="text" class="chat-input" placeholder="Enter command or instruction for the agent...">
+                <button class="btn btn-primary">Run</button>
             </div>
-        </div>
+        </main>
     </div>
+</body>
+</html>
 </body>
 </html>
