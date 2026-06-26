@@ -1,341 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Optimal Codex Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ivansslo/agent-openai</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            margin: 0;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        header {
+            background-color: #161b22;
+            padding: 12px 24px;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .repo-header {
+            background-color: #0d1117;
+            flex-shrink: 0;
+        }
+        .repo-title-container {
+            padding: 16px 32px 8px;
+        }
+        .repo-title {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .repo-title a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        .repo-title .separator {
+            color: #8b949e;
+        }
+        .tabs {
+            display: flex;
+            padding: 0 32px;
+            gap: 8px;
+            border-bottom: 1px solid #30363d;
+        }
+        .tab {
+            padding: 8px 16px;
+            color: #c9d1d9;
+            text-decoration: none;
+            font-size: 14px;
+            border-bottom: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tab.active {
+            font-weight: 600;
+            border-bottom-color: #f78166;
+        }
+        .tab-icon {
+            fill: #8b949e;
+        }
+        .active .tab-icon {
+            fill: #c9d1d9;
+        }
 
-  <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-  </style>
+        /* Workspace Layout */
+        .workspace-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: #0d1117;
+            border-right: 1px solid #30363d;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-header {
+            padding: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #30363d;
+        }
+        .agent-list {
+            overflow-y: auto;
+            flex: 1;
+        }
+        .agent-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #21262d;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .agent-item:hover {
+            background-color: #161b22;
+        }
+        .agent-item.active {
+            background-color: #161b22;
+            border-left: 2px solid #f78166;
+        }
+        .agent-item-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .agent-item-status {
+            font-size: 12px;
+            color: #8b949e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #238636;
+        }
+
+        /* Main Panel */
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #0d1117;
+        }
+        .panel-header {
+            padding: 12px 24px;
+            background-color: #161b22;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .terminal {
+            flex: 1;
+            background-color: #010409;
+            margin: 16px;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            padding: 16px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .terminal-line { margin-bottom: 4px; }
+        .prompt { color: #58a6ff; }
+        .command { color: #c9d1d9; }
+        .output { color: #8b949e; }
+        .success { color: #3fb950; }
+
+        .input-area {
+            padding: 16px 24px;
+            border-top: 1px solid #30363d;
+            display: flex;
+            gap: 12px;
+        }
+        .chat-input {
+            flex: 1;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #c9d1d9;
+            font-size: 14px;
+        }
+        .btn {
+            background-color: #21262d;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 5px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background-color: #238636;
+            color: white;
+            border-color: rgba(240,246,252,0.1);
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
-  
-  <div class="flex min-h-screen bg-slate-950 text-slate-100 overflow-hidden" id="app">
-    <!-- Sidebar -->
-    <aside class="w-64 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl p-6 flex flex-col justify-between hidden md:flex">
-      <div>
-        <div class="flex items-center gap-3 mb-8">
-          <div class="h-10 w-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-            <i class="bi bi-cpu text-white text-xl"></i>
-          </div>
-          <div>
-            <h1 class="font-bold text-sm leading-none tracking-wide text-white">CODEX CORE</h1>
-            <span class="text-xs text-indigo-400 font-medium">Enterprise Suite</span>
-          </div>
+<body>
+    <header>
+        <svg height="32" viewBox="0 0 16 16" width="32" style="fill: #f0f6fc;">
+            <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+        </svg>
+    </header>
+
+    <div class="repo-header">
+        <div class="repo-title-container">
+            <div class="repo-title">
+                <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7a.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path></svg>
+                <a href="#">ivansslo</a>
+                <span class="separator">/</span>
+                <a href="#" style="font-weight: 600;">agent-openai</a>
+                <span style="font-size: 12px; border: 1px solid #30363d; border-radius: 20px; padding: 0 7px; color: #8b949e;">Public</span>
+            </div>
         </div>
-        
-        <nav class="space-y-1">
-          <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-indigo-600/10 text-indigo-400 font-medium text-sm transition-all">
-            <i class="bi bi-grid-fill"></i> Dashboard
-          </a>
-          <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium text-sm transition-all">
-            <i class="bi bi-bar-chart"></i> Analytics
-          </a>
-          <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium text-sm transition-all">
-            <i class="bi bi-wallet2"></i> Transactions
-          </a>
-          <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium text-sm transition-all">
-            <i class="bi bi-people"></i> Customers
-          </a>
-          <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium text-sm transition-all">
-            <i class="bi bi-gear"></i> Settings
-          </a>
+
+        <nav class="tabs">
+            <a href="#" class="tab"><svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25Z"></path></svg> Code</a>
+            <a href="#" class="tab active"><svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" style="fill: #c9d1d9;"><path d="M3.177 6.676a.25.25 0 0 0 .177.427h1.146V10a2.5 2.5 0 0 0 2.5 2.5h1v1.146a.25.25 0 0 0 .427.177l2.827-2.827a.25.25 0 0 0 0-.354L8.43 7.816a.25.25 0 0 0-.427.177V9.143h-1a1 1 0 0 1-1-1v-2.89h1.146a.25.25 0 0 0 .177-.427L4.506 3.003a.25.25 0 0 0-.354 0L1.326 5.83a.25.25 0 0 0 .177.427h1.674v.42Z"></path><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"></path></svg> Agents</a>
+            <a href="#" class="tab"><svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M11 2.75V4H5V2.75A.75.75 0 0 1 5.75 2h4.5a.75.75 0 0 1 .75.75Z"></path></svg> Projects</a>
         </nav>
-      </div>
-
-      <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
-        <p class="text-xs text-slate-400 leading-normal mb-3">Model Active: <strong class="text-indigo-400">gpt-5-ultra</strong></p>
-        <div class="w-full bg-slate-700 rounded-full h-1.5">
-          <div class="bg-indigo-500 h-1.5 rounded-full" style="width: 78%"></div>
-        </div>
-        <div class="flex justify-between items-center mt-2 text-[10px] text-slate-500">
-          <span>Usage: 7.8M/10M</span>
-          <span>78%</span>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Workspace -->
-    <main class="flex-1 flex flex-col overflow-y-auto">
-      <!-- Top Header -->
-      <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur px-8 py-4 flex items-center justify-between sticky top-0 z-10">
-        <div class="flex items-center gap-4">
-          <button class="md:hidden text-white text-xl"><i class="bi bi-list"></i></button>
-          <div class="relative hidden sm:block">
-            <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"></i>
-            <input type="text" placeholder="Search operations, analytics, keys..." class="bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-2 text-xs focus:outline-none focus:border-indigo-500 text-slate-100 w-64 transition-all" />
-          </div>
-        </div>
-        
-        <div class="flex items-center gap-4">
-          <div class="flex items-center gap-2 bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-semibold border border-emerald-500/20">
-            <span class="h-1.5 w-1.5 bg-emerald-400 rounded-full animate-ping"></span> Live Agent Server Connected
-          </div>
-          <button class="h-9 w-9 rounded-lg border border-slate-800 flex items-center justify-center text-slate-300 hover:text-white transition-all">
-            <i class="bi bi-bell"></i>
-          </button>
-          <div class="flex items-center gap-2.5 pl-2 border-l border-slate-800">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="Avatar" class="h-8 w-8 rounded-full border border-indigo-500/30 object-cover" />
-            <div class="hidden lg:block text-left">
-              <p class="text-xs font-semibold leading-tight text-white">Dev Admin</p>
-              <span class="text-[10px] text-indigo-400 font-medium">Optimal AI Sandbox</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <!-- Content Grid -->
-      <div class="p-8 space-y-8 max-w-[1400px] w-full mx-auto">
-        <!-- Dashboard Welcome Hero -->
-        <div class="bg-gradient-to-r from-indigo-900/30 via-slate-900 to-slate-950 p-8 rounded-2xl border border-indigo-500/10 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div class="relative z-10 space-y-1">
-            <span class="text-xs uppercase tracking-widest text-indigo-400 font-bold">System Status: Optimal</span>
-            <h2 class="text-2xl font-bold tracking-tight text-white">Welcome back to Codex Admin</h2>
-            <p class="text-slate-400 text-sm max-w-xl">You are testing simulated performance on model <span class="text-indigo-400 font-semibold">gpt-5-ultra</span>. Live code editing is enabled.</p>
-          </div>
-          <div class="flex gap-3">
-            <button class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-semibold transition-all" id="btn-toast">
-              <i class="bi bi-lightning-charge"></i> Run Probe
-            </button>
-            <button class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition-all shadow-lg shadow-indigo-600/20" id="btn-add-widget">
-              <i class="bi bi-plus"></i> Custom Action
-            </button>
-          </div>
-        </div>
-
-        <!-- Key Metrics Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-800">
-            <div class="flex justify-between items-start mb-4">
-              <div class="h-10 w-10 bg-indigo-500/10 rounded-lg flex items-center justify-center text-indigo-400"><i class="bi bi-hdd-network text-lg"></i></div>
-              <span class="text-xs text-emerald-400 font-semibold flex items-center gap-1"><i class="bi bi-arrow-up-right"></i> +12.3%</span>
-            </div>
-            <p class="text-xs text-slate-400 uppercase font-medium tracking-wider">Total API Requests</p>
-            <h3 class="text-2xl font-bold text-white mt-1">148,252</h3>
-            <p class="text-[11px] text-slate-500 mt-2">Previous Month: 132,019</p>
-          </div>
-
-          <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-800">
-            <div class="flex justify-between items-start mb-4">
-              <div class="h-10 w-10 bg-violet-500/10 rounded-lg flex items-center justify-center text-violet-400"><i class="bi bi-stopwatch text-lg"></i></div>
-              <span class="text-xs text-emerald-400 font-semibold flex items-center gap-1"><i class="bi bi-arrow-up-right"></i> -180ms</span>
-            </div>
-            <p class="text-xs text-slate-400 uppercase font-medium tracking-wider">Average Latency</p>
-            <h3 class="text-2xl font-bold text-white mt-1">240ms</h3>
-            <p class="text-[11px] text-slate-500 mt-2">Optimal AI routing enabled</p>
-          </div>
-
-          <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-800">
-            <div class="flex justify-between items-start mb-4">
-              <div class="h-10 w-10 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-400"><i class="bi bi-database text-lg"></i></div>
-              <span class="text-xs text-emerald-400 font-semibold flex items-center gap-1"><i class="bi bi-check-circle"></i> 99.99%</span>
-            </div>
-            <p class="text-xs text-slate-400 uppercase font-medium tracking-wider">Up-time Accuracy</p>
-            <h3 class="text-2xl font-bold text-white mt-1">99.98%</h3>
-            <p class="text-[11px] text-slate-500 mt-2">2 redundant node failovers</p>
-          </div>
-
-          <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-800">
-            <div class="flex justify-between items-start mb-4">
-              <div class="h-10 w-10 bg-amber-500/10 rounded-lg flex items-center justify-center text-amber-400"><i class="bi bi-coin text-lg"></i></div>
-              <span class="text-xs text-rose-400 font-semibold flex items-center gap-1"><i class="bi bi-arrow-down-left"></i> -$124.50</span>
-            </div>
-            <p class="text-xs text-slate-400 uppercase font-medium tracking-wider">Simulated Savings</p>
-            <h3 class="text-2xl font-bold text-white mt-1">$4,852.12</h3>
-            <p class="text-[11px] text-slate-500 mt-2">Utilizing free open tier models</p>
-          </div>
-        </div>
-
-        <!-- Interactive Charts & Analytics -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Main Chart -->
-          <div class="bg-slate-900/30 p-6 rounded-xl border border-slate-800/80 lg:col-span-2 space-y-4">
-            <div class="flex justify-between items-center">
-              <div>
-                <h4 class="font-bold text-sm text-white">System Traffic & Latency Real-Time</h4>
-                <p class="text-xs text-slate-500">Live network request spikes in correlation with prompt token processing</p>
-              </div>
-              <div class="flex gap-2">
-                <button class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[11px]" id="chart-hourly">Hourly</button>
-                <button class="px-2.5 py-1 bg-indigo-600 text-white rounded text-[11px]" id="chart-daily">Daily</button>
-              </div>
-            </div>
-
-            <!-- Virtual Bar/Line Graph built with responsive Flexboxes -->
-            <div class="h-64 flex items-end justify-between gap-2.5 pt-8 px-4 border-b border-slate-800 relative">
-              <!-- Grid Background Lines -->
-              <div class="absolute inset-x-0 top-0 border-b border-slate-800/40 h-16 pointer-events-none"></div>
-              <div class="absolute inset-x-0 top-16 border-b border-slate-800/40 h-16 pointer-events-none"></div>
-              <div class="absolute inset-x-0 top-32 border-b border-slate-800/40 h-16 pointer-events-none"></div>
-              <div class="absolute inset-x-0 top-48 border-b border-slate-800/40 h-16 pointer-events-none"></div>
-
-              <!-- Bar 1 -->
-              <div class="flex-1 flex flex-col items-center group relative cursor-pointer">
-                <div class="w-full bg-indigo-600/30 hover:bg-indigo-600/60 rounded-t-sm h-20 transition-all duration-300 relative">
-                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-700 text-white px-2 py-0.5 rounded text-[10px] hidden group-hover:block whitespace-nowrap">20ms | 12k</div>
-                </div>
-                <span class="text-[10px] text-slate-500 mt-2">Mon</span>
-              </div>
-              <!-- Bar 2 -->
-              <div class="flex-1 flex flex-col items-center group relative cursor-pointer">
-                <div class="w-full bg-indigo-500/30 hover:bg-indigo-500/60 rounded-t-sm h-32 transition-all duration-300 relative">
-                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-700 text-white px-2 py-0.5 rounded text-[10px] hidden group-hover:block whitespace-nowrap">45ms | 19k</div>
-                </div>
-                <span class="text-[10px] text-slate-500 mt-2">Tue</span>
-              </div>
-              <!-- Bar 3 -->
-              <div class="flex-1 flex flex-col items-center group relative cursor-pointer">
-                <div class="w-full bg-indigo-500 hover:bg-indigo-400 rounded-t-sm h-52 transition-all duration-300 relative">
-                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-indigo-500 text-white px-2 py-0.5 rounded text-[10px] hidden group-hover:block whitespace-nowrap">Peak: 120ms | 45k</div>
-                  <div class="absolute inset-x-0 top-0 h-1.5 bg-indigo-400 animate-pulse"></div>
-                </div>
-                <span class="text-[10px] text-indigo-400 font-semibold mt-2">Wed</span>
-              </div>
-              <!-- Bar 4 -->
-              <div class="flex-1 flex flex-col items-center group relative cursor-pointer">
-                <div class="w-full bg-indigo-600/30 hover:bg-indigo-600/60 rounded-t-sm h-40 transition-all duration-300 relative">
-                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-700 text-white px-2 py-0.5 rounded text-[10px] hidden group-hover:block whitespace-nowrap">60ms | 28k</div>
-                </div>
-                <span class="text-[10px] text-slate-500 mt-2">Thu</span>
-              </div>
-              <!-- Bar 5 -->
-              <div class="flex-1 flex flex-col items-center group relative cursor-pointer">
-                <div class="w-full bg-indigo-600/30 hover:bg-indigo-600/60 rounded-t-sm h-24 transition-all duration-300 relative">
-                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-700 text-white px-2 py-0.5 rounded text-[10px] hidden group-hover:block whitespace-nowrap">25ms | 15k</div>
-                </div>
-                <span class="text-[10px] text-slate-500 mt-2">Fri</span>
-              </div>
-              <!-- Bar 6 -->
-              <div class="flex-1 flex flex-col items-center group relative cursor-pointer">
-                <div class="w-full bg-indigo-600/30 hover:bg-indigo-600/60 rounded-t-sm h-16 transition-all duration-300 relative">
-                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-700 text-white px-2 py-0.5 rounded text-[10px] hidden group-hover:block whitespace-nowrap">15ms | 8k</div>
-                </div>
-                <span class="text-[10px] text-slate-500 mt-2">Sat</span>
-              </div>
-              <!-- Bar 7 -->
-              <div class="flex-1 flex flex-col items-center group relative cursor-pointer">
-                <div class="w-full bg-indigo-600/30 hover:bg-indigo-600/60 rounded-t-sm h-28 transition-all duration-300 relative">
-                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-700 text-white px-2 py-0.5 rounded text-[10px] hidden group-hover:block whitespace-nowrap">30ms | 22k</div>
-                </div>
-                <span class="text-[10px] text-slate-500 mt-2">Sun</span>
-              </div>
-            </div>
-            
-            <div class="flex justify-between text-xs text-slate-500 px-2">
-              <span>* Data refresh: every 5 seconds</span>
-              <span>Model Routing accuracy: 98.4%</span>
-            </div>
-          </div>
-
-          <!-- Live Operations Console -->
-          <div class="bg-slate-900/30 p-6 rounded-xl border border-slate-800/80 space-y-4">
-            <div class="flex justify-between items-center">
-              <h4 class="font-bold text-sm text-white">Console Logs</h4>
-              <button class="h-6 px-2 bg-slate-800 hover:bg-slate-700 rounded text-[10px] text-slate-400" id="btn-clear-logs">Clear</button>
-            </div>
-            
-            <div class="bg-slate-950 p-4 rounded-lg font-mono text-[11px] leading-relaxed text-slate-400 h-64 overflow-y-auto space-y-2 border border-slate-800" id="console-logs">
-              <div class="text-indigo-400">[09:00:01] Loading Workspace Configuration...</div>
-              <div class="text-indigo-400">[09:00:02] Model Registry Loaded: 14 models found.</div>
-              <div class="text-emerald-400">[09:00:03] Connected to OpenRouter and Zen AI.</div>
-              <div class="text-slate-500">[09:01:14] Heartbeat packet sent. Latency 14ms.</div>
-              <div class="text-slate-500">[09:02:45] Client synchronized successfully.</div>
-              <div class="text-indigo-400">[09:04:12] Switched model to gpt-5-ultra.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dynamic Content Table -->
-        <div class="bg-slate-900/30 rounded-xl border border-slate-800/80 overflow-hidden">
-          <div class="p-6 border-b border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h4 class="font-bold text-sm text-white">Execution Sandbox Deployments</h4>
-              <p class="text-xs text-slate-500">Live interactive widgets and subcomponents built in the sandbox</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <input type="text" placeholder="Filter deploys..." class="bg-slate-900/80 border border-slate-800 text-xs px-3 py-1.5 rounded-lg text-slate-300 focus:outline-none focus:border-indigo-500" />
-            </div>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr class="border-b border-slate-800 bg-slate-900/20 text-slate-400 font-medium">
-                  <th class="p-4">Deploy Name</th>
-                  <th class="p-4">Model Engine</th>
-                  <th class="p-4">Status</th>
-                  <th class="p-4">Simulated Latency</th>
-                  <th class="p-4">Date Deploy</th>
-                  <th class="p-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-800/50" id="table-body">
-                <tr class="hover:bg-slate-900/10 transition-colors">
-                  <td class="p-4 font-semibold text-white flex items-center gap-2.5">
-                    <span class="h-2 w-2 rounded-full bg-emerald-400"></span> Glassmorphic Card
-                  </td>
-                  <td class="p-4 text-indigo-400 font-medium">gpt-5-ultra</td>
-                  <td class="p-4"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px] font-semibold border border-emerald-500/20">Production</span></td>
-                  <td class="p-4 text-slate-400">180ms</td>
-                  <td class="p-4 text-slate-500">Just Now</td>
-                  <td class="p-4 text-right">
-                    <button class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-[11px] text-slate-300 mr-1">Preview</button>
-                    <button class="px-2 py-1 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white rounded text-[11px]">Deploy</button>
-                  </td>
-                </tr>
-                <tr class="hover:bg-slate-900/10 transition-colors">
-                  <td class="p-4 font-semibold text-white flex items-center gap-2.5">
-                    <span class="h-2 w-2 rounded-full bg-emerald-400"></span> Responsive Multi-file
-                  </td>
-                  <td class="p-4 text-indigo-400 font-medium">gpt-5-pro (Code-Core)</td>
-                  <td class="p-4"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px] font-semibold border border-emerald-500/20">Production</span></td>
-                  <td class="p-4 text-slate-400">210ms</td>
-                  <td class="p-4 text-slate-500">5 mins ago</td>
-                  <td class="p-4 text-right">
-                    <button class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-[11px] text-slate-300 mr-1">Preview</button>
-                    <button class="px-2 py-1 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white rounded text-[11px]">Deploy</button>
-                  </td>
-                </tr>
-                <tr class="hover:bg-slate-900/10 transition-colors">
-                  <td class="p-4 font-semibold text-white flex items-center gap-2.5">
-                    <span class="h-2 w-2 rounded-full bg-amber-400"></span> Llama Chat Free
-                  </td>
-                  <td class="p-4 text-slate-400 font-medium">llama-3-8b-instruct</td>
-                  <td class="p-4"><span class="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 text-[10px] font-semibold border border-indigo-500/20">Staging</span></td>
-                  <td class="p-4 text-slate-400">420ms</td>
-                  <td class="p-4 text-slate-500">2 hours ago</td>
-                  <td class="p-4 text-right">
-                    <button class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-[11px] text-slate-300 mr-1">Preview</button>
-                    <button class="px-2 py-1 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white rounded text-[11px]">Deploy</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 border border-indigo-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 translate-y-20 opacity-0 pointer-events-none z-50">
-      <div class="h-7 w-7 bg-indigo-500/20 text-indigo-400 rounded-lg flex items-center justify-center">
-        <i class="bi bi-patch-check-fill text-lg"></i>
-      </div>
-      <div>
-        <h5 class="text-xs font-bold">Network Probe Successful</h5>
-        <p class="text-[10px] text-slate-400">All models responding at premium thresholds.</p>
-      </div>
     </div>
-  </div>
-    
+
+    <div class="workspace-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">Active Agents</div>
+            <div class="agent-list">
+                <div class="agent-item active">
+                    <div class="agent-item-name">OpenAI-Assistant-01</div>
+                    <div class="agent-item-status"><span class="status-dot"></span> Online</div>
+                </div>
+                <div class="agent-item">
+                    <div class="agent-item-name">DocGen-Agent</div>
+                    <div class="agent-item-status"><span class="status-dot" style="background-color: #8b949e;"></span> Idle</div>
+                </div>
+                <div class="agent-item">
+                    <div class="agent-item-name">Bug-Hunter-Bot</div>
+                    <div class="agent-item-status"><span class="status-dot" style="background-color: #f85149;"></span> Error</div>
+                </div>
+            </div>
+            <div style="padding: 16px; border-top: 1px solid #30363d;">
+                <button class="btn" style="width: 100%; justify-content: center;">+ New Agent</button>
+            </div>
+        </aside>
+
+        <main class="main-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span style="font-weight: 600;">OpenAI-Assistant-01</span>
+                    <span style="font-size: 12px; color: #8b949e; background: #21262d; padding: 2px 8px; border-radius: 10px;">gpt-4o</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn">Settings</button>
+                    <button class="btn btn-primary">Deploy</button>
+                </div>
+            </div>
+
+            <div class="terminal">
+                <div class="terminal-line"><span class="success">[SYSTEM]</span> Agent initialized successfully.</div>
+                <div class="terminal-line"><span class="success">[SYSTEM]</span> Connected to repository: ivansslo/agent-openai</div>
+                <div class="terminal-line"><span class="prompt">ivansslo@agent-01:~$</span> <span class="command">analyze ./src</span></div>
+                <div class="terminal-line"><span class="output">Starting analysis of source directory...</span></div>
+                <div class="terminal-line"><span class="output">Found 12 files. Checking for optimization opportunities...</span></div>
+                <div class="terminal-line"><span class="success">[OK]</span> Analysis complete. Suggested 2 PRs for performance improvement.</div>
+                <div class="terminal-line"><span class="prompt">ivansslo@agent-01:~$</span> <span class="command">_</span></div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" class="chat-input" placeholder="Enter command or instruction for the agent...">
+                <button class="btn btn-primary">Run</button>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
 </body>
 </html>
